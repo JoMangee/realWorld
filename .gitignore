@@ -3,3 +3,6 @@
 ################################################################################
 
 /PlotlinesBot/node_modules
+/PlotlinesBot/typings
+/PlotlinesBot/.vs/PlotlinesBot/v14/.suo
+/PlotlinesBot/server.js
