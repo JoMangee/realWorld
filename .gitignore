@@ -6,3 +6,5 @@
 /PlotlinesBot/typings
 /PlotlinesBot/.vs/PlotlinesBot/v14/.suo
 /PlotlinesBot/server.js
+/PlotlinesBot/bin
+/PlotlinesBot/obj/Debug
