@@ -1,0 +1,23 @@
+{
+  "name": "plotlinesbot",
+  "version": "0.0.1",
+  "description": "Plotlines uses real world sources to add interactive elements to games. PlotlinesBot is an chat bot bringing Plotlines onto chat platforms",
+  "main": "app.js",
+  "scripts": {
+    "test": "testcmd"
+  },
+  "repository": {
+    "type": "git",
+    "url": "G:\\Apps\\BotBuilder\\PlotlinesBot"
+  },
+  "keywords": [
+    "bot",
+    "plotlines"
+  ],
+  "author": "Jo Booth",
+  "license": "CC-BY-NC-ND-3.0-NZ",
+  "dependencies": {
+    "botbuilder": "^3.2.3",
+    "restify": "^4.1.1"
+  }
+}
