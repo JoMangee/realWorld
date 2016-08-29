@@ -85,7 +85,6 @@ bot.on('conversationUpdate', function (message) {
 bot.on('contactRelationUpdate', function (message) {
     if (message.action === 'add') {
         var name = message.user ? message.user.name : null;
-        session.userData.name = name;
         var reply = new builder.Message()
             .address(message.address)
             .text("Hello %s... Thanks for adding me. I'm still in progress, but try 'help' if you get stuck.", name || 'there');
@@ -176,6 +175,6 @@ bot.dialog('/cricket', [
 
 bot.dialog('/help', [
     function (session) {
-        session.endDialog("Global commands that are available anytime:\n\n* change name - changes what bot calls you \n* goodbye - End this conversation.\n* help - Displays these commands.");
+        session.endDialog("Global commands that are available anytime:\n\n* **change name** - changes what bot calls you \n* **goodbye** - End this conversation.\n* **help** - Displays these commands.");
     }
 ]);
