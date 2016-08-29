@@ -58,6 +58,12 @@ bot.on('conversationUpdate', function (message) {
                         .address(message.address)
                         .text("Hello everyone!");
                     bot.send(reply);
+                } else {
+                    //if it's not us being added, we may as well greet the new person
+                    var reply = new builder.Message()
+                        .address(message.address)
+                        .text("Welcome along %s", identity.name || ':)');
+                    bot.send(reply);
                 }
             });
         }
@@ -79,6 +85,7 @@ bot.on('conversationUpdate', function (message) {
 bot.on('contactRelationUpdate', function (message) {
     if (message.action === 'add') {
         var name = message.user ? message.user.name : null;
+        session.userData.name = name;
         var reply = new builder.Message()
             .address(message.address)
             .text("Hello %s... Thanks for adding me. I'm still in progress, but try 'help' if you get stuck.", name || 'there');
@@ -92,6 +99,20 @@ bot.on('deleteUserData', function (message) {
     // User asked to delete their data
 });
 
+// Install First Run middleware and dialog
+bot.use(builder.Middleware.firstRun({ version: 1.0, dialogId: '*:/firstRun' }));
+bot.dialog('/firstRun', [
+    function (session) {
+        if (!session.userData.name) {
+            session.beginDialog('/profile');
+        }
+    },
+    function (session, results) {
+        // We'll save the users name and send them an initial greeting. All 
+        // future messages from the user will be routed to the root dialog.
+        session.endDialog("Thanks %s!", session.userData.name);
+    }
+]);
 
 //=========================================================
 // Bots Dialogs
@@ -118,7 +139,6 @@ intents.matches(/cricket(.*)result/i, [
     }
 ]);
 
-
 intents.onDefault([
     function (session, args, next) {
         if (!session.userData.name) {
@@ -133,8 +153,9 @@ intents.onDefault([
 ]);
 
 bot.dialog('/profile', [
-    function (session) {
+    function (session, message) {
         builder.Prompts.text(session, 'Hi! What is your name?');
+
     },
     function (session, results) {
         session.userData.name = results.response;
@@ -149,5 +170,12 @@ bot.dialog('/cricket', [
     function (session, results) {
         session.userData.cricket = results.response;
         session.endDialog();
+    }
+]);
+
+
+bot.dialog('/help', [
+    function (session) {
+        session.endDialog("Global commands that are available anytime:\n\n* change name - changes what bot calls you \n* goodbye - End this conversation.\n* help - Displays these commands.");
     }
 ]);
