@@ -51,6 +51,16 @@ intents.matches(/change(.*)name/i, [
     }
 ]);
 
+intents.matches(/cricket(.*)result/i, [
+    function (session) {
+        session.beginDialog('/cricket');
+    },
+    function (session, results) {
+        session.send('Ok... I\'ll keep an eye out for those %s', session.userData.name);
+    }
+]);
+
+
 intents.onDefault([
     function (session, args, next) {
         if (!session.userData.name) {
@@ -70,6 +80,16 @@ bot.dialog('/profile', [
     },
     function (session, results) {
         session.userData.name = results.response;
+        session.endDialog();
+    }
+]);
+
+bot.dialog('/cricket', [
+    function (session) {
+        builder.Prompts.text(session, 'Which cricket teams are you interested in?');
+    },
+    function (session, results) {
+        session.userData.cricket = results.response;
         session.endDialog();
     }
 ]);
