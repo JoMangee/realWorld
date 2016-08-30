@@ -1,5 +1,6 @@
 var restify = require('restify');
-var builder = require('botbuilder');
+var builder = require('../Node/core/');//= require('botbuilder');
+const fs = require('fs');
 /*const https = require('https');
 const fs = require('fs');
 
@@ -7,8 +8,6 @@ const options = {
     key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
     cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')
 };*/
-//Basis REST
-
 
 //=========================================================
 // Bot Setup
@@ -113,6 +112,47 @@ bot.dialog('/firstRun', [
     }
 ]);
 
+// Locale detection middleware
+bot.use({
+    botbuilder: function (session, next) {
+        var _loc = session.preferredLocale();
+        console.log('Preferred Locale is %s', _loc);
+        if (session.message.textLocale) {
+            // if we have a locale with the text - use it!
+            session.preferredLocale(session.message.textLocale, function () { session.send('Hello World') }, (err) => {
+                session.send("Sorry I can't speak %s - will use English", session.message.textLocale);
+            });
+        }
+        else // Use proper method to detect locale -- typing es triggers the es locale to be set
+        if (/^es/i.test(session.message.text)) {
+            // Set the locale for the session once its detected
+            session.preferredLocale("es", function () { session.send('Hello World') },(err) => {
+            });
+
+            // Use proper method to detect locale -- typing us triggers the en-us locale to be set            
+        } else if (/^us/i.test(session.message.text)) {
+            // Set the locale for the session once its detected
+            session.preferredLocale("en-us", function () { session.send('Hello World') }, (err) => {
+            });
+
+            // Use proper method to detect locale -- typing nz triggers the en-nz locale to be set
+        } else if (/^nz/i.test(session.message.text)) {
+            // Set the locale for the session once its detected
+            session.preferredLocale("en-nz", function () { session.send('Hello World') }, (err) => {
+            });
+        } else {
+            // By not setting the preferred locale, we will fallback to the default (en in this case) 
+            console.log('Locale fell out - using %s',_loc);
+        }
+        if (_loc != session.preferredLocale()) {
+            console.log('Locale changed from %s to %s in conversation %s', _loc, session.preferredLocale(), session.message.address.conversation.id);
+            session.send("Locale now set to %s", session.preferredLocale());
+        }
+        next();
+    }
+});
+
+
 //=========================================================
 // Bots Dialogs
 //=========================================================
@@ -140,6 +180,7 @@ intents.matches(/cricket(.*)result/i, [
 
 intents.onDefault([
     function (session, args, next) {
+        console.log('Message in');
         if (!session.userData.name) {
             session.beginDialog('/profile');
         } else {

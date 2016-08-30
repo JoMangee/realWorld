@@ -1,0 +1,7 @@
+{
+    "default_number": "I didn't recognise that as a number. Please enter a number.",
+    "default_time": "I didn't recognise the time you entered. Please try again.",
+    "default_choice": "I didn't understand :( Please choose an option from the list.",
+    "recognize": "recognise",
+    "localization": "localisation"
+}   

@@ -33,10 +33,20 @@ MICROSOFT_APP_PASSWORD=vNzoYpL5ZCj4gtSko2F4yEG</Environment>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
+    <Content Include="locale\en-nz\index.json" />
+    <Content Include="locale\en-us\index.json" />
+    <Content Include="locale\en\BotBuilder.json" />
+    <Content Include="locale\en\index.json" />
+    <Content Include="locale\es\index.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="locale\" />
+    <Folder Include="locale\en-nz\" />
+    <Folder Include="locale\en-us\" />
+    <Folder Include="locale\en\" />
+    <Folder Include="locale\es\" />
     <Folder Include="typings\" />
     <Folder Include="typings\globals\" />
     <Folder Include="typings\globals\node\" />
