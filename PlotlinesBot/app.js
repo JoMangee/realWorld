@@ -38,8 +38,8 @@ server.post('/api/messages', connector.listen());
 // Bots Global Actions
 //=========================================================
 
-bot.endConversationAction('goodbye', 'Goodbye :)', { matches: /^goodbye/i });
-bot.beginDialogAction('help', '/help', { matches: /^help/i });
+bot.endConversationAction('goodbye', 'Goodbye :)', { matches: /^goodbye(.*)/i });
+bot.beginDialogAction('help', '/help', { matches: /^help(.*)/i });
 
 //=========================================================
 // Activity Events
@@ -119,26 +119,26 @@ bot.use({
         console.log('Preferred Locale is %s', _loc);
         if (session.message.textLocale) {
             // if we have a locale with the text - use it!
-            session.preferredLocale(session.message.textLocale, function () { session.send('Hello World') }, (err) => {
+            session.preferredLocale(session.message.textLocale, function () { session.send('greeting') }, (err) => {
                 session.send("Sorry I can't speak %s - will use English", session.message.textLocale);
             });
         }
         else // Use proper method to detect locale -- typing es triggers the es locale to be set
         if (/^es/i.test(session.message.text)) {
             // Set the locale for the session once its detected
-            session.preferredLocale("es", function () { session.send('Hello World') },(err) => {
+            session.preferredLocale("es", function () { session.send('greeting') },(err) => {
             });
 
             // Use proper method to detect locale -- typing us triggers the en-us locale to be set            
         } else if (/^us/i.test(session.message.text)) {
             // Set the locale for the session once its detected
-            session.preferredLocale("en-us", function () { session.send('Hello World') }, (err) => {
+            session.preferredLocale("en-us", function () { session.send('greeting') }, (err) => {
             });
 
             // Use proper method to detect locale -- typing nz triggers the en-nz locale to be set
         } else if (/^nz/i.test(session.message.text)) {
             // Set the locale for the session once its detected
-            session.preferredLocale("en-nz", function () { session.send('Hello World') }, (err) => {
+            session.preferredLocale("en-nz", function () { session.send('greeting') }, (err) => {
             });
         } else {
             // By not setting the preferred locale, we will fallback to the default (en in this case) 
@@ -188,7 +188,9 @@ intents.onDefault([
         }
     },
     function (session, results) {
-        session.send('Hello %s!', session.userData.name);
+        var greet = session.localizer.gettext(session.preferredLocale(), "greeting"); 
+        greet = greet.charAt(0).toUpperCase() + greet.slice(1);
+        session.send("%s %s!", greet ,session.userData.name || "there"); 
     }
 ]);
 
