@@ -39,14 +39,16 @@ server.post('/api/messages', connector.listen());
 //=========================================================
 
 bot.endConversationAction('goodbye', 'Goodbye :)', { matches: /^goodbye(.*)/i });
-bot.beginDialogAction('help', '/help', { matches: /^help(.*)/i });
+bot.beginDialogAction('help', '/help', { matches: /(.*)help(.*)/i });
+bot.beginDialogAction('install', '/install', { matches: /(.*)install(.*)/i });
+bot.beginDialogAction('alarm', '/alarm', { matches: /(.*)alarm(.*)/i });
 
 //=========================================================
 // Activity Events
 //=========================================================
-
-
+bot.on('typing', function (message) { console.log("I see typing"); });
 bot.on('conversationUpdate', function (message) {
+    console.log("Conversation update");
     // Check for group conversations
     if (message.address.conversation.isGroup) {
         // Send a hello message when bot is added
@@ -74,6 +76,12 @@ bot.on('conversationUpdate', function (message) {
                     var reply = new builder.Message()
                         .address(message.address)
                         .text("Goodbye");
+                    bot.send(reply);
+                } else {
+                    //if it's not us being added, we may as well greet the new person
+                    var reply = new builder.Message()
+                        .address(message.address)
+                        .text("Bye %s", identity.name || ' :|');
                     bot.send(reply);
                 }
             });
@@ -169,7 +177,7 @@ intents.matches(/change(.*)name/i, [
     }
 ]);
 
-intents.matches(/cricket(.*)result/i, [
+intents.matches(/cricket(.*)(result|score)/i, [
     function (session) {
         session.beginDialog('/cricket');
     },
@@ -218,6 +226,182 @@ bot.dialog('/cricket', [
 
 bot.dialog('/help', [
     function (session) {
-        session.endDialog("Global commands that are available anytime:\n\n* **change name** - changes what bot calls you \n* **goodbye** - End this conversation.\n* **help** - Displays these commands.");
+        session.endDialog("Some commands that are available:\n\n* **change name** - changes what bot calls you \n* **install** - shows install links\n* **goodbye** - End this conversation.\n* **help** - Displays these commands.");
     }
 ]);
+
+bot.dialog('/install', [
+    function (session) {
+        session.send("Do you want a challenge...");
+        session.sendTyping();
+        var msg = new builder.Message(session)
+            .attachmentLayout(builder.AttachmentLayout.carousel)
+            .attachments([
+                new builder.HeroCard(session)
+                    .title("Realistic Ball Physics")
+                    .text("Smashing Cricket!")
+                    .images([
+                        builder.CardImage.create(session, "https://lh3.googleusercontent.com/flFFJJcX0z0CNaMzlU5jccrWaJTkOcAv4MzD9gYFOi2Zg_2A_GqbFGpDOebwf0Z-tNc=h320")
+                            .tap(builder.CardAction.showImage(session, "https://lh3.googleusercontent.com/flFFJJcX0z0CNaMzlU5jccrWaJTkOcAv4MzD9gYFOi2Zg_2A_GqbFGpDOebwf0Z-tNc=h900")),
+                    ]),
+                new builder.HeroCard(session)
+                    .title("Super Slow Motion")
+                    .text("Smashing Cricket!")
+                    .images([
+                        builder.CardImage.create(session, "https://lh3.googleusercontent.com/SMZ8eMDBDJq0j2UHDA777Gkip1mh2Knrcwbu4_Yg_vp2PXFLuSA00Hqp50mKZZC8CDs=h320")
+                            .tap(builder.CardAction.showImage(session, "https://lh3.googleusercontent.com/SMZ8eMDBDJq0j2UHDA777Gkip1mh2Knrcwbu4_Yg_vp2PXFLuSA00Hqp50mKZZC8CDs=h900")),
+                    ]),
+                new builder.HeroCard(session)
+                    .title("Fabulous Animations")
+                    .text("Smashing Cricket!")
+                    .images([
+                        builder.CardImage.create(session, "https://lh3.googleusercontent.com/p3qA71O430pamCA5IkDl0ianeYlAyYbjyhDFEzZwqjuMHpLL9FuSyyL1NUO60mkhpg=h320")
+                            .tap(builder.CardAction.showImage(session, "https://lh3.googleusercontent.com/p3qA71O430pamCA5IkDl0ianeYlAyYbjyhDFEzZwqjuMHpLL9FuSyyL1NUO60mkhpg=h900")),
+                    ]),
+                new builder.HeroCard(session)
+                    .title("Hit 4's and 6's!")
+                    .text("Smashing Cricket!")
+                    .images([
+                        builder.CardImage.create(session, "https://lh3.googleusercontent.com/xBxSR1g9afEy2XYPKjiTYvaPiisSHk10UEkobcsaNi3kYVYdtpV9tKIVOJ5UM5DqkiQh=h320")
+                            .tap(builder.CardAction.showImage(session, "https://lh3.googleusercontent.com/xBxSR1g9afEy2XYPKjiTYvaPiisSHk10UEkobcsaNi3kYVYdtpV9tKIVOJ5UM5DqkiQh=h900")),
+                    ]),
+                new builder.HeroCard(session)
+                    .title("See how far you Go")
+                    .text("Smashing Cricket!")
+                    .images([
+                        builder.CardImage.create(session, "https://lh3.googleusercontent.com/Wq34bbXD_mKmQz_Vk3RyvK9EWrFsYB34s49TcnhKkJNpxo6bQlWgIGUo9V1WrP4hmT8=h320")
+                            .tap(builder.CardAction.showImage(session, "https://lh3.googleusercontent.com/Wq34bbXD_mKmQz_Vk3RyvK9EWrFsYB34s49TcnhKkJNpxo6bQlWgIGUo9V1WrP4hmT8=h900")),
+                    ])
+            ]);
+
+        session.send(msg);
+        msg = new builder.Message(session)
+            .textFormat(builder.TextFormat.markdown)
+            .attachments([
+                new builder.ThumbnailCard(session)
+                    .title("Smashing Cricket")
+                    .subtitle("Fun Realistic Cricket Simulation")
+                    .text("**Smashing Cricket** - the best free 3D cricket simulation game for your mobile devices with great graphics and realistic physics. Are you a cricket fan? and you love batting? Keep smashing the ball without getting out. See how far you can go. Free to play. Realistic ball physics. Great 3D graphics!")
+                    .images([
+                        builder.CardImage.create(session, "https://lh3.googleusercontent.com/Rl8LUGgaRvShxPmtN1idKk3ybGFSjLTADhgh-N9nPI7lgCrX-v3chZtJVTrfS8UQd-A=w200")
+                    ])
+                    .buttons([
+                        builder.CardAction.openUrl(session, "https://itunes.apple.com/us/app/smashing-cricket-fun-realistic/id1087690204?mt=8", "iOS"),
+                        builder.CardAction.openUrl(session, "https://play.google.com/store/apps/details?id=com.athanggames.smashingcricket", "Android"),
+                        builder.CardAction.openUrl(session, "smashingcricket://open", "Play Now")
+                    ])
+            ]);
+        session.endDialog(msg);
+    }
+]);
+
+
+
+// Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
+var model = process.env.model || 'https://api.projectoxford.ai/luis/v1/application?id=c413b2ef-382c-45bd-8ff0-f76d60e2a821&subscription-key=6d0966209c6e4f6b835ce34492f3e6d9&q=';
+var recognizer = new builder.LuisRecognizer(model);
+var alarmdialog = new builder.IntentDialog({ recognizers: [recognizer] });
+bot.dialog('/alarm', alarmdialog);
+
+// Add intent handlers
+alarmdialog.matches('builtin.intent.alarm.set_alarm', [
+    function (session, args, next) {
+        // Resolve and store any entities passed from LUIS.
+        var title = builder.EntityRecognizer.findEntity(args.entities, 'builtin.alarm.title');
+        var time = builder.EntityRecognizer.resolveTime(args.entities);
+        var alarm = session.dialogData.alarm = {
+            title: title ? title.entity : null,
+            timestamp: time ? time.getTime() : null
+        };
+
+        // Prompt for title
+        if (!alarm.title) {
+            builder.Prompts.text(session, 'What would you like to call your alarm?');
+        } else {
+            next();
+        }
+    },
+    function (session, results, next) {
+        var alarm = session.dialogData.alarm;
+        if (results.response) {
+            alarm.title = results.response;
+        }
+
+        // Prompt for time (title will be blank if the user said cancel)
+        if (alarm.title && !alarm.timestamp) {
+            builder.Prompts.time(session, 'What time would you like to set the alarm for?');
+        } else {
+            next();
+        }
+    },
+    function (session, results) {
+        var alarm = session.dialogData.alarm;
+        if (results.response) {
+            var time = builder.EntityRecognizer.resolveTime([results.response]);
+            alarm.timestamp = time ? time.getTime() : null;
+        }
+
+        // Set the alarm (if title or timestamp is blank the user said cancel)
+        if (alarm.title && alarm.timestamp) {
+            // Save address of who to notify and write to scheduler.
+            alarm.address = session.message.address;
+            alarms[alarm.title] = alarm;
+
+            // Send confirmation to user
+            var date = new Date(alarm.timestamp);
+            var isAM = date.getHours() < 12;
+            session.send('Creating alarm named "%s" for %d/%d/%d %d:%02d%s',
+                alarm.title,
+                date.getMonth() + 1, date.getDate(), date.getFullYear(),
+                isAM ? date.getHours() : date.getHours() - 12, date.getMinutes(), isAM ? 'am' : 'pm');
+        } else {
+            session.send('Ok... no problem.');
+        }
+    }
+]);
+
+alarmdialog.matches('builtin.intent.alarm.delete_alarm', [
+    function (session, args, next) {
+        // Resolve entities passed from LUIS.
+        var title;
+        var entity = builder.EntityRecognizer.findEntity(args.entities, 'builtin.alarm.title');
+        if (entity) {
+            // Verify its in our set of alarms.
+            title = builder.EntityRecognizer.findBestMatch(alarms, entity.entity);
+        }
+
+        // Prompt for alarm name
+        if (!title) {
+            builder.Prompts.choice(session, 'Which alarm would you like to delete?', alarms);
+        } else {
+            next({ response: title });
+        }
+    },
+    function (session, results) {
+        // If response is null the user canceled the task
+        if (results.response) {
+            delete alarms[results.response.entity];
+            session.send("Deleted the '%s' alarm.", results.response.entity);
+        } else {
+            session.send('Ok... no problem.');
+        }
+    }
+]);
+
+alarmdialog.onDefault(builder.DialogAction.send("I'm sorry I didn't understand. I can only create & delete alarms."));
+
+// Very simple alarm scheduler
+var alarms = {};
+setInterval(function () {
+    var now = new Date().getTime();
+    for (var key in alarms) {
+        var alarm = alarms[key];
+        if (now >= alarm.timestamp) {
+            var msg = new builder.Message()
+                .address(alarm.address)
+                .text("Here's your '%s' alarm.", alarm.title);
+            bot.send(msg);
+            delete alarms[key];
+        }
+    }
+}, 15000);
