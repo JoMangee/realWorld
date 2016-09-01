@@ -6,7 +6,8 @@
     <Name>PlotlinesBot</Name>
     <RootNamespace>PlotlinesBot</RootNamespace>
     <Environment>MICROSOFT_APP_ID=5fa78453-3a34-4051-b666-56cc1910a43f
-MICROSOFT_APP_PASSWORD=vNzoYpL5ZCj4gtSko2F4yEG</Environment>
+MICROSOFT_APP_PASSWORD=vNzoYpL5ZCj4gtSko2F4yEG
+PORT=1337</Environment>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
