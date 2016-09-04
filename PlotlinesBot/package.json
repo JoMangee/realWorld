@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "G:\\Apps\\BotBuilder\\PlotlinesBot"
+    "url": "file:///G:/Apps/BotBuilder/PlotlinesBot/.git"
   },
   "keywords": [
     "plotlines",

@@ -42,6 +42,7 @@ bot.endConversationAction('goodbye', 'Goodbye :)', { matches: /^goodbye(.*)/i })
 bot.beginDialogAction('help', '/help', { matches: /(.*)help(.*)/i });
 bot.beginDialogAction('install', '/install', { matches: /(.*)install(.*)/i });
 bot.beginDialogAction('alarm', '/alarm', { matches: /(.*)alarm(.*)/i });
+bot.beginDialogAction('endaction', '/endaction', { matches: /(cancel|end|stop|quit)/i });
 
 //=========================================================
 // Activity Events
@@ -127,6 +128,7 @@ bot.use({
         console.log('Preferred Locale is %s', _loc);
         if (session.message.textLocale) {
             // if we have a locale with the text - use it!
+            console.log('Text Locale is %s', session.message.textLocale);
             session.preferredLocale(session.message.textLocale, function () { session.send('greeting') }, (err) => {
                 session.send("Sorry I can't speak %s - will use English", session.message.textLocale);
             });
@@ -227,6 +229,12 @@ bot.dialog('/cricket', [
 bot.dialog('/help', [
     function (session) {
         session.endDialog("Some commands that are available:\n\n* **change name** - changes what bot calls you \n* **install** - shows install links\n* **goodbye** - End this conversation.\n* **help** - Displays these commands.");
+    }
+]);
+
+bot.dialog('/endaction', [
+    function (session) {
+        session.endDialog("Ok, I've stopped that.");
     }
 ]);
 
@@ -388,7 +396,8 @@ alarmdialog.matches('builtin.intent.alarm.delete_alarm', [
     }
 ]);
 
-alarmdialog.onDefault(builder.DialogAction.send("I'm sorry I didn't understand. I can only create & delete alarms."));
+alarmdialog.onDefault(builder.DialogAction.send("Sorry, I missed that! \nIn alarm  mode I can only set or delete alarms.. \nType **cancel** if you need"));
+
 
 // Very simple alarm scheduler
 var alarms = {};
@@ -399,7 +408,7 @@ setInterval(function () {
         if (now >= alarm.timestamp) {
             var msg = new builder.Message()
                 .address(alarm.address)
-                .text("Here's your '%s' alarm.", alarm.title);
+                .text("It's time for your '%s' alarm.", alarm.title);
             bot.send(msg);
             delete alarms[key];
         }
