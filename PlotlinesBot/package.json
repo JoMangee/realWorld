@@ -19,6 +19,8 @@
   "license": "CC-BY-NC-ND-3.0-NZ",
   "dependencies": {
     "botbuilder": "^3.2.3",
-    "restify": "^4.1.1"
+    "restify": "^4.1.1",
+    "request"    : "latest",
+    "cheerio"    : "latest"
   }
 }
