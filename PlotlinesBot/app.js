@@ -1,3 +1,4 @@
+console.log('Booting...');
 var restify = require('restify');
 var builder = require('../Node/core/');//= require('botbuilder');
 const fs = require('fs');
@@ -34,6 +35,7 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector, { localizerSettings: { botLocalePath: "./locale", defaultLocale: "en" } });
 server.post('/api/messages', connector.listen());
 
+console.log('Server up...');
 //=========================================================
 // Bots Global Actions
 //=========================================================
@@ -206,11 +208,15 @@ intents.onDefault([
 
 bot.dialog('/profile', [
     function (session, message) {
-        builder.Prompts.text(session, 'Hi! What is your name?');
+        if (!session.userData.name) {
+            builder.Prompts.text(session, 'Hi! What is your name?');
+        }
 
     },
-    function (session, results) {
-        session.userData.name = results.response;
+    function (session, results, next) {
+        if (results.response) {
+            session.userData.name = results.response;
+        }
         session.endDialog();
     }
 ]);
@@ -419,29 +425,37 @@ var request = require('request');
 var cheerio = require('cheerio');
 server.get('/scrape', function (req, res) {
 
-    url = 'http://insta7.com/Cricket.aspx';
+    url = 'http://m.cricbuzz.com/cricket-match/live-scores';
+    // http://insta7.com/Cricket.aspx 
+    request = request.defaults({ jar: true })
 
     request(url, function (error, response, html) {
-        if (!error) {
+        if (!error && response.statusCode == 200) {
             var $ = cheerio.load(html);
 
-            var title, release, rating;
-            var json = { toss: "", status: "", motm: "", scores: "" };
-
-            $('.header').filter(function () {
+            var all, title, status, toss, motm, scores;
+            var json = { all: "", title: "", toss: "", status: "", motm: "", scores: "" };
+            $('h4.cb-list-item').filter(function () {
                 var data = $(this);
-                title = data.children().first().text();
-                release = data.children().last().children().text();
-
+                all = data.text();
+                title = data.text();
+                json.all = all;
                 json.title = title;
-                json.release = release;
+                console.log("Match: %s",title);
+            })
+            $('.cbz-ui-status').filter(function () {
+                var data = $(this);
+                status = data.text();
+            
+                json.status = status;
+                console.log(" Status: %s",status);
             })
 
-            $('.star-box-giga-star').filter(function () {
+            $('.ui-allscores').filter(function () {
                 var data = $(this);
-                rating = data.text();
-
-                json.rating = rating;
+                scores = data.text();
+                json.scores = scores;
+                console.log(" Scores: %s", scores);
             })
         }
 
