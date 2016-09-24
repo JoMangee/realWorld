@@ -11,6 +11,10 @@ Plotlines uses real world sources to add interactive elements to games. Plotline
 ### Install
  1. Run the app.js with Node :)
  2. > ngrok http 1337
+    
+    or
+
+    > ngrok start plotline-bot
  3. Profit
  
 ## Roadmap

@@ -22,8 +22,42 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 
 //Basic GET
 server.get("/", function (req, res, next) {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('This is Plotlines Bot server - nothing to see here\n');
+
+    if (req.accepts('text/html')) {
+        var body = '<html><head><title>Plotline Bot</title></head>\
+        <body><p>This is Plotlines Bot server<br/>\
+            <script>\
+            window.fbAsyncInit = function () {\
+            FB.init({\
+                appId: "APP_ID",\
+                xfbml: true,\
+                version: "v2.6"\
+            });\
+            \
+        };\
+        \
+        (function (d, s, id) {\
+            var js, fjs = d.getElementsByTagName(s)[0];\
+            if (d.getElementById(id)) { return; }\
+            js = d.createElement(s); js.id = id;\
+            js.src = "//connect.facebook.net/en_US/sdk.js";\
+            fjs.parentNode.insertBefore(js, fjs);\
+        } (document, \'script\', \'facebook-jssdk\'));\
+        \
+        </script>\
+        <a href="https://www.messenger.com/t/174037992643608"><img src="https://facebook.botframework.com/Content/MessageUs.png"></a><br/>\
+        <a href="https://join.skype.com/bot/5fa78453-3a34-4051-b666-56cc1910a43f"><img src="https://dev.botframework.com/Client/Images/Add-To-Skype-Buttons.png"/></a><br/>\
+       </body></html>';
+         res.writeHead(200, {
+            'Content-Length': Buffer.byteLength(body),
+            'Content-Type': 'text/html'
+        });
+        res.write(body);
+        res.end();
+    } else {
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('This is Plotlines Bot server - nothing to see here\n');
+    }
     return next();
 });
 
@@ -434,6 +468,7 @@ server.get('/scrape', function (req, res) {
             var $ = cheerio.load(html);
 
             var all, title, status, toss, motm, scores;
+            var scraped = [];
             var json = { all: "", title: "", toss: "", status: "", motm: "", scores: "" };
             $('h4.cb-list-item').filter(function () {
                 var data = $(this);
@@ -441,22 +476,24 @@ server.get('/scrape', function (req, res) {
                 title = data.text();
                 json.all = all;
                 json.title = title;
-                console.log("Match: %s",title);
-            })
-            $('.cbz-ui-status').filter(function () {
-                var data = $(this);
-                status = data.text();
-            
-                json.status = status;
-                console.log(" Status: %s",status);
-            })
+                console.log("Match: %s", title);
+                $('.cbz-ui-status').filter(function () {
+                    var data = $(this);
+                    status = data.text();
 
-            $('.ui-allscores').filter(function () {
-                var data = $(this);
-                scores = data.text();
-                json.scores = scores;
-                console.log(" Scores: %s", scores);
+                    json.status = status;
+                    console.log(" Status: %s", status);
+                    $('.ui-allscores').filter(function () {
+                        var data = $(this);
+                        scores = data.text();
+                        json.scores = scores;
+                        console.log(" Scores: %s", scores);
+                        scraped.push(json);
+                    })
+                })
+                
             })
+            console.log(scraped);
         }
 
         // To write to the system we will use the built in 'fs' library.
