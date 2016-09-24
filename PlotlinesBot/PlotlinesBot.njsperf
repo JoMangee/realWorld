@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<ProfilingTarget xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ProjectTarget>
+    <TargetProject>33494996-f768-40ef-a3b6-3c382428e70c</TargetProject>
+    <FriendlyName>PlotlinesBot</FriendlyName>
+  </ProjectTarget>
+</ProfilingTarget>

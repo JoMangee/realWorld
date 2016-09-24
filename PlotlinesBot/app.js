@@ -24,30 +24,31 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 server.get("/", function (req, res, next) {
 
     if (req.accepts('text/html')) {
-        var body = '<html><head><title>Plotline Bot</title></head>\
-        <body><p>This is Plotlines Bot server<br/>\
-            <script>\
-            window.fbAsyncInit = function () {\
-            FB.init({\
-                appId: "APP_ID",\
-                xfbml: true,\
-                version: "v2.6"\
-            });\
-            \
-        };\
-        \
-        (function (d, s, id) {\
-            var js, fjs = d.getElementsByTagName(s)[0];\
-            if (d.getElementById(id)) { return; }\
-            js = d.createElement(s); js.id = id;\
-            js.src = "//connect.facebook.net/en_US/sdk.js";\
-            fjs.parentNode.insertBefore(js, fjs);\
-        } (document, \'script\', \'facebook-jssdk\'));\
-        \
-        </script>\
-        <a href="https://www.messenger.com/t/174037992643608"><img src="https://facebook.botframework.com/Content/MessageUs.png"></a><br/>\
-        <a href="https://join.skype.com/bot/5fa78453-3a34-4051-b666-56cc1910a43f"><img src="https://dev.botframework.com/Client/Images/Add-To-Skype-Buttons.png"/></a><br/>\
-       </body></html>';
+        var body = 
+'<html><head><title>Plotline Bot</title></head>\
+ <body><p>This is Plotlines Bot server<br/>\
+ <script>\
+  window.fbAsyncInit = function () {\
+  FB.init({\
+  appId: "APP_ID",\
+  xfbml: true,\
+  version: "v2.6"\
+  });\
+\
+  };\
+\
+ (function (d, s, id) {\
+ var js, fjs = d.getElementsByTagName(s)[0];\
+ if (d.getElementById(id)) { return; }\
+ js = d.createElement(s); js.id = id;\
+ js.src = "//connect.facebook.net/en_US/sdk.js";\
+ fjs.parentNode.insertBefore(js, fjs);\
+ } (document, \'script\', \'facebook-jssdk\'));\
+\
+ </script>\
+ <a href="https://www.messenger.com/t/174037992643608"><img src="https://facebook.botframework.com/Content/MessageUs.png"></a><br/>\
+ <a href="https://join.skype.com/bot/5fa78453-3a34-4051-b666-56cc1910a43f"><img src="https://dev.botframework.com/Client/Images/Add-To-Skype-Buttons.png"/></a><br/>\
+</body></html>';
          res.writeHead(200, {
             'Content-Length': Buffer.byteLength(body),
             'Content-Type': 'text/html'
