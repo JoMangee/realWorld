@@ -14,7 +14,7 @@ Plotlines uses real world sources to add interactive elements to games. Plotline
     
     or
 
-    > ngrok start plotline-bot
+    > ngrok start plotlines-bot
  3. Profit
  
 ## Roadmap
